@@ -5,7 +5,9 @@ import { Username } from "../domain/value-objects/username.js";
 import { Password } from "../domain/value-objects/password.js";
 import { CreateUser } from "./create-user.js";
 
-schemaBuilder.objectType(User, {
+const UserSchema = schemaBuilder.objectRef<User>("User");
+
+schemaBuilder.objectType(UserSchema, {
   name: "User",
   isTypeOf: (value) => value instanceof User,
   description: "User of the application",
@@ -24,21 +26,21 @@ schemaBuilder.objectType(User, {
 
 schemaBuilder.queryFields((t) => ({
   me: t.field({
-    type: User,
+    type: UserSchema,
     resolve: () => {
-      return new User({
-        id: Id.generate(),
-        username: new Username("aplusd"),
-        password: new Password("Keklol1@"),
+      return User.fromGateway({
+        id: Id.generate().getOrThrow().valueOf(),
+        username: Username.fromString("aplusd").getOrThrow().valueOf(),
+        password: Password.fromString("Keklol1@").getOrThrow().valueOf(),
         createdAt: new Date(),
-      });
+      }).getOrThrow();
     },
   }),
 }));
 
 schemaBuilder.mutationField("createUser", (t) =>
   t.field({
-    type: User,
+    type: UserSchema,
     errors: {
       types: [AggregateError],
     },
@@ -52,8 +54,8 @@ schemaBuilder.mutationField("createUser", (t) =>
         required: true,
       }),
     },
-    resolve: async (_root, args) => {
-      const createUser = new CreateUser();
+    resolve: async (_root, args, context) => {
+      const createUser = new CreateUser(context);
       const createUserResult = await createUser.execute(args);
       return createUserResult.getOrThrow();
     },

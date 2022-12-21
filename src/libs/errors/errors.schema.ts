@@ -17,8 +17,8 @@ schemaBuilder.objectType(ValidationError, {
   name: "ValidationError",
   isTypeOf: (value) => value instanceof ValidationError,
   fields: (t) => ({
-    path: t.string({
-      resolve: (error) => error.path.join("."),
+    path: t.stringList({
+      resolve: (error) => error.path,
     }),
     message: t.exposeString("message"),
   }),

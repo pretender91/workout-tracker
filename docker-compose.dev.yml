@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      target: dev
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgres://postgres:postgres@database:5432/postgres
+    volumes:
+      - ./src:/workout-tracker/src
+      - ./prisma:/workout-tracker/prisma
+    links:
+      - "database:database"
+    depends_on:
+      - database
+  database:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - ./data:/var/lib/postgresql/data
