@@ -1,6 +1,7 @@
 import { createYoga } from "graphql-yoga";
 import { fastify, FastifyReply, FastifyRequest } from "fastify";
 import { schema } from "./schema.js";
+import { UserGateway } from "./modules/users/infrastructure/user.gateway.js";
 
 const app = fastify({ logger: true });
 
@@ -17,6 +18,9 @@ const yoga = createYoga<{
   },
   schema: schema,
   maskedErrors: false,
+  context: {
+    userGateway: UserGateway,
+  },
 });
 
 app.route({
@@ -37,4 +41,7 @@ app.route({
   },
 });
 
-await app.listen(4000);
+await app.listen({
+  port: 4000,
+  host: "0.0.0.0",
+});

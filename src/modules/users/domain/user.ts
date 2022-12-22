@@ -1,5 +1,5 @@
-import { Username, UsernameFactory } from "./value-objects/username.js";
-import { Password, PasswordFactory } from "./value-objects/password.js";
+import { Username } from "./value-objects/username.js";
+import { Password } from "./value-objects/password.js";
 import { Entity } from "../../../libs/entity/entity.js";
 import { Result } from "../../../libs/result/result.js";
 import { Id } from "../../../libs/value-object/id.js";
@@ -15,40 +15,62 @@ export class User extends Entity {
   public password: Password;
   public createdAt: Date;
 
-  constructor(params: UserParams) {
+  private constructor(params: UserParams) {
     super(params.id);
 
     this.username = params.username;
     this.password = params.password;
     this.createdAt = params.createdAt;
   }
-}
 
-export const UserFactory = {
-  fromUsernameAndPassword(params: {
+  public static fromUsernameAndPassword(params: {
     username: string;
     password: string;
   }): Result<User, AggregateError> {
     return Result.all({
-      username: UsernameFactory.fromString(params.username),
-      password: PasswordFactory.fromString(params.password),
+      id: Id.generate(),
+      username: Username.fromString(params.username),
+      password: Password.fromString(params.password),
     })
       .map(
-        ({ username, password }) =>
+        ({ id, username, password }) =>
           new User({
-            id: Id.generate(),
+            id,
             username,
             password,
             createdAt: new Date(),
           })
       )
       .mapFailure((errors) => {
-        return new AggregateError(
-          Object.entries(errors).map(
-            ([key, error]) => new ValidationError([key], error.message)
-          ),
-          "Can not create user."
+        return ValidationError.aggregate(errors, "Can not create user.");
+      });
+  }
+
+  public static fromGateway(params: {
+    id: string;
+    username: string;
+    password: string;
+    createdAt: Date;
+  }): Result<User, AggregateError> {
+    return Result.all({
+      id: Id.fromString(params.id),
+      username: Username.fromString(params.username),
+      password: Password.fromString(params.password),
+    })
+      .map(
+        ({ id, username, password }) =>
+          new User({
+            id,
+            username,
+            password,
+            createdAt: params.createdAt,
+          })
+      )
+      .mapFailure((errors) => {
+        return ValidationError.aggregate(
+          errors,
+          "Can not fill user from gateway."
         );
       });
-  },
-};
+  }
+}
