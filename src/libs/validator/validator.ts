@@ -1,36 +1,32 @@
 import { Result } from "../result/result.js";
+import type { ValidatorError } from "./validator-error.js";
 
-export type ValidatorResult<ErrorMessage extends string> = Result<
-  true,
-  ErrorMessage
->;
+export type ValidatorResult = Result<true, ValidatorError>;
 
 export type ValidatorRule<T> = (value: T) => boolean;
 
-export class Validator<T, ValidatorMessage extends string> {
-  #pairs: [ValidatorMessage, ValidatorRule<T>][] = [];
+export class Validator<T> {
+  private readonly pairs: [ValidatorError, ValidatorRule<T>][] = [];
 
-  constructor(pairs: [ValidatorMessage, ValidatorRule<T>][]) {
-    this.#pairs = pairs;
+  constructor(pairs: [ValidatorError, ValidatorRule<T>][] = []) {
+    this.pairs = pairs;
   }
 
-  public addValidation<NewErrorMessage extends string>(
-    message: NewErrorMessage,
+  public addValidation(
+    issue: ValidatorError,
     rule: ValidatorRule<T>
-  ): Validator<T, NewErrorMessage | ValidatorMessage> {
-    return new Validator<T, NewErrorMessage | ValidatorMessage>([
-      ...this.#pairs,
-      [message, rule],
-    ]);
+  ): Validator<T> {
+    this.pairs.push([issue, rule]);
+    return this;
   }
 
-  public execute(value: T): ValidatorResult<ValidatorMessage> {
-    for (const [message, rule] of this.#pairs) {
+  public execute(value: T): ValidatorResult {
+    for (const [issue, rule] of this.pairs) {
       if (!rule(value)) {
-        return Result.failure(message);
+        return Result.failure(issue) as ValidatorResult;
       }
     }
 
-    return Result.success(true);
+    return Result.success(true) as ValidatorResult;
   }
 }

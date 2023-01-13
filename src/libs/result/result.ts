@@ -37,22 +37,22 @@ interface FailureResult<T, E> extends ResultCommon<T, E> {
   readonly error: E;
 }
 
-type UnwrapSuccessResult<T> = T extends Result<infer U, any> ? U : never;
-type UnwrapFailureResult<T> = T extends Result<any, infer U> ? U : never;
+export type UnwrapSuccessResult<T> = T extends Result<infer U, any> ? U : never;
+export type UnwrapFailureResult<T> = T extends Result<any, infer U> ? U : never;
 
-type UnwrapSuccessResultRecord<T> = T extends {}
+export type UnwrapSuccessResultRecord<T> = T extends {}
   ? {
       [K in keyof T]: UnwrapSuccessResult<T[K]>;
     }
   : never;
 
-type UnwrapFailureResultRecord<T> = T extends {}
+export type UnwrapFailureResultRecord<T> = T extends {}
   ? {
       [K in keyof T]: UnwrapFailureResult<T[K]>;
     }
   : never;
 
-type AllResult<T> = T extends {}
+export type AllResult<T> = T extends {}
   ? Result<UnwrapSuccessResultRecord<T>, UnwrapFailureResultRecord<T>>
   : never;
 

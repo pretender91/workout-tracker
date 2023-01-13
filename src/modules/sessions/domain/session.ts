@@ -1,18 +1,18 @@
 import { Entity } from "../../../libs/entity/entity.js";
-import type { User } from "../../users/domain/user.js";
-import type { Token } from "./token.js";
+import type { Id } from "../../../value-objects/id.js";
+import type { Token } from "../../../value-objects/token.js";
 
-type SessionParams = Pick<Session, "id" | "createdAt" | "user" | "token">;
+type SessionParams = Pick<Session, "id" | "createdAt" | "userId" | "token">;
 
 export class Session extends Entity {
-  public user: User;
+  public userId: Id;
   public token: Token;
   public createdAt: Date;
 
   constructor(params: SessionParams) {
     super(params.id);
 
-    this.user = params.user;
+    this.userId = params.userId;
     this.token = params.token;
     this.createdAt = params.createdAt;
   }

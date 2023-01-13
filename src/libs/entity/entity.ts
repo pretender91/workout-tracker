@@ -1,8 +1,8 @@
+import type { Id } from "../../value-objects/id.js";
 import type { Equatable } from "../equatable.js";
-import type { ValueObject } from "../value-object/value-object.js";
 
 export class Entity implements Equatable {
-  constructor(public readonly id: ValueObject<string>) {}
+  constructor(public readonly id: Id) {}
 
   public equals(other: this): boolean {
     return this.id.equals(other.id);
