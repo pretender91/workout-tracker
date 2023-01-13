@@ -1,15 +1,19 @@
-import { createYoga } from "graphql-yoga";
 import { fastify, FastifyReply, FastifyRequest } from "fastify";
-import { schema } from "./schema.js";
-import { UserGateway } from "./modules/users/infrastructure/user.gateway.js";
+import { createYoga } from "graphql-yoga";
+import { Context } from "./context.js";
+import { schema } from "./graphql/schema.js";
+import type { Session } from "./modules/sessions/domain/session.js";
+import type { User } from "./modules/users/domain/user.js";
+import { Token } from "./value-objects/token.js";
 
 const app = fastify({ logger: true });
+
+const staticContext = new Context();
 
 const yoga = createYoga<{
   req: FastifyRequest;
   reply: FastifyReply;
 }>({
-  // Integrate Fastify logger
   logging: {
     debug: (...args) => args.forEach((arg) => app.log.debug(arg)),
     info: (...args) => args.forEach((arg) => app.log.info(arg)),
@@ -18,8 +22,26 @@ const yoga = createYoga<{
   },
   schema: schema,
   maskedErrors: false,
-  context: {
-    userGateway: UserGateway,
+  context: async (ctx) => {
+    const token = Token.fromString(
+      ctx.req.headers.authorization?.replace("Bearer ", "") ?? ""
+    );
+
+    let session: Session | null = null;
+    let user: User | null = null;
+
+    if (token.valueOf().length > 0) {
+      session = await staticContext.sessionGateway.findByToken(token);
+    }
+
+    if (session) {
+      user = await staticContext.userGateway.findById(session.userId);
+    }
+
+    return Object.assign({}, staticContext.copy(), {
+      currentUser: user,
+      currentSession: session,
+    });
   },
 });
 

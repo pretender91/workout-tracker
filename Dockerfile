@@ -15,4 +15,4 @@ ENV NODE_ENV=development
 ENV DATABASE_URL=postgres://postgres:postgres@database:5432/postgres
 RUN npm ci --production=false
 COPY . .
-CMD npm run prisma:generate && npm run prisma:migrate && npm run dev
+CMD npm run dev

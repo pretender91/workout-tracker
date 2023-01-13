@@ -1,5 +1,5 @@
-import type { Equatable } from "../equatable.js";
 import { Comparable, CompareResult } from "../comparable.js";
+import type { Equatable } from "../equatable.js";
 
 export class ValueObject<T> implements Equatable, Comparable {
   constructor(private readonly value: T) {}
@@ -23,4 +23,8 @@ export class ValueObject<T> implements Equatable, Comparable {
 
     return CompareResult.Greater;
   }
+}
+
+for (let i = 0; i < 10; i++) {
+  console.log(i);
 }
