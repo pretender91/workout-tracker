@@ -55,15 +55,11 @@ const schemaBuilder = new SchemaBuilder<{
     runScopesOnType: true,
   },
   authScopes: async (context) => {
-    console.log(context.currentUser);
-    let scopes = {
+    return {
       unauthenticated: !context.currentUser,
       user: !!context.currentUser,
       admin: false,
     };
-
-    console.log(scopes);
-    return scopes;
   },
 });
 
