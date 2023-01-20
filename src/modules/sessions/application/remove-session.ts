@@ -34,7 +34,6 @@ export class RemoveSession extends UseCase<
       throw new Error("You can't remove other user's session");
     }
 
-    await this.context.sessionGateway.removeSession(session);
-    return session.id;
+    return this.context.sessionGateway.removeSession(session);
   }
 }
