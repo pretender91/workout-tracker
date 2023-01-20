@@ -7,7 +7,7 @@ schemaBuilder.mutationField("removeSession", (t) =>
     type: SessionSchema,
     nullable: true,
     authScopes: {
-      unauthenticated: true,
+      unauthenticated: false,
       user: true,
       admin: false,
     },
