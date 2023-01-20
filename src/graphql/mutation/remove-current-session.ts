@@ -1,10 +1,9 @@
 import { RemoveSession } from "../../modules/sessions/application/remove-session.js";
-import { SessionSchema } from "../node/session.schema.js";
 import { schemaBuilder } from "../schema-builder.js";
 
 schemaBuilder.mutationField("removeCurrentSession", (t) =>
   t.field({
-    type: SessionSchema,
+    type: "Id",
     nullable: true,
     authScopes: {
       unauthenticated: false,

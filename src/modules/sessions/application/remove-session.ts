@@ -14,7 +14,7 @@ type RemoveSessionContext = {
   currentUser?: User;
 };
 
-type RemoveSessionOutput = Promise<null>;
+type RemoveSessionOutput = Promise<Session["id"] | null>;
 
 export class RemoveSession extends UseCase<
   RemoveSessionParams,
@@ -35,6 +35,6 @@ export class RemoveSession extends UseCase<
     }
 
     await this.context.sessionGateway.removeSession(session);
-    return null;
+    return session.id;
   }
 }
