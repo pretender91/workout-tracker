@@ -24,6 +24,8 @@ export interface SessionGateway {
     user: User,
     pagination: PaginationParams
   ): Promise<Connection<Session>>;
+
+  removeSession(session: Session): Promise<void>;
 }
 
 export class PrismaSessionGateway implements SessionGateway {
@@ -66,6 +68,36 @@ export class PrismaSessionGateway implements SessionGateway {
       this.getSessionKey(session),
       JSON.stringify(this.sessionMapper.toDTO(session))
     );
+  }
+
+  private async removeFromCache(session: Session): Promise<void> {
+    const sessionFromCache = await redisClient.get(this.getSessionKey(session));
+
+    if (!sessionFromCache) {
+      return;
+    }
+
+    await redisClient.del(this.getSessionKey(session));
+  }
+
+  public async removeSession(session: Session): Promise<void> {
+    const sessionFromPrisma = await prismaClient.session.findFirst({
+      where: {
+        token: session.token.valueOf(),
+      },
+    });
+
+    if (sessionFromPrisma === null) {
+      return;
+    }
+    const prismaSessionFromDTO = this.sessionMapper.toDomain(sessionFromPrisma);
+
+    await prismaClient.session.delete({
+      where: {
+        token: sessionFromPrisma.token.valueOf(),
+      },
+    });
+    await this.removeFromCache(prismaSessionFromDTO);
   }
 
   private async getFromCache(params: {
