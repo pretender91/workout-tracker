@@ -71,12 +71,6 @@ export class PrismaSessionGateway implements SessionGateway {
   }
 
   private async removeFromCache(session: Session): Promise<void> {
-    const sessionFromCache = await redisClient.get(this.getSessionKey(session));
-
-    if (!sessionFromCache) {
-      return;
-    }
-
     await redisClient.del(this.getSessionKey(session));
   }
 
