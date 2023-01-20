@@ -81,25 +81,14 @@ export class PrismaSessionGateway implements SessionGateway {
   }
 
   public async removeSession(session: Session): Promise<Session["id"] | null> {
-    const sessionFromPrisma = await prismaClient.session.findFirst({
+    await prismaClient.session.delete({
       where: {
         token: session.token.valueOf(),
       },
     });
+    await this.removeFromCache(session);
 
-    if (sessionFromPrisma === null) {
-      return null;
-    }
-    const prismaSessionFromDTO = this.sessionMapper.toDomain(sessionFromPrisma);
-
-    await prismaClient.session.delete({
-      where: {
-        token: sessionFromPrisma.token.valueOf(),
-      },
-    });
-    await this.removeFromCache(prismaSessionFromDTO);
-
-    return prismaSessionFromDTO.id;
+    return session.id;
   }
 
   private async getFromCache(params: {
