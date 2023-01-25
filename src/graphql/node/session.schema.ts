@@ -18,7 +18,14 @@ export const SessionSchema = schemaBuilder.objectType(Session, {
       type: UserSchema,
       resolve: async (root, _args, context) => {
         const findUserById = new FindUserById({ id: root.userId }, context);
-        return findUserById.execute();
+
+        const user = await findUserById.execute();
+
+        if (!user) {
+          throw new Error("User not found");
+        }
+
+        return user;
       },
     }),
   }),
