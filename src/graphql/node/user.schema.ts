@@ -1,5 +1,6 @@
 import { parsePaginationParams } from "../../libs/pagination.js";
 import { FindUserSessions } from "../../modules/sessions/application/find-user-sessions.js";
+import { FindUserById } from "../../modules/users/application/find-user-by-id.js";
 import { User } from "../../modules/users/domain/user.js";
 import { SessionsConnectionSchema } from "../connections/sessions-connection.js";
 import { schemaBuilder } from "../schema-builder.js";
@@ -42,3 +43,17 @@ export const UserSchema = schemaBuilder.objectType(User, {
     }),
   }),
 });
+
+schemaBuilder.queryField("user", (t) =>
+  t.field({
+    type: UserSchema,
+    nullable: true,
+    args: {
+      id: t.arg({ type: "Id", required: true }),
+    },
+    resolve: async (_root, args, context) => {
+      const findUserById = new FindUserById(args, context);
+      return findUserById.execute();
+    },
+  })
+);

@@ -11,7 +11,7 @@ type FindUserByIdContext = {
   userGateway: UserGateway;
 };
 
-type FindUserByIdOutput = User;
+type FindUserByIdOutput = User | null;
 
 export class FindUserById extends UseCase<
   FindUserByIdParams,
@@ -22,12 +22,6 @@ export class FindUserById extends UseCase<
     const { id } = this.params;
     const { userGateway } = this.context;
 
-    const user = await userGateway.findById(id);
-
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    return user;
+    return userGateway.findById(id);
   }
 }
