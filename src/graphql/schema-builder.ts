@@ -2,6 +2,8 @@ import SchemaBuilder from "@pothos/core";
 import ScopeAuthPlugin from "@pothos/plugin-scope-auth";
 import type { Id } from "src/value-objects/id.js";
 import type { Token } from "src/value-objects/token.js";
+import type { ExerciseGateway } from "../modules/exercises/infrastructure/exercise.gateway.js";
+import type { MuscleGateway } from "../modules/muscles/infrastucture/muscle.gateway.js";
 import type { Session } from "../modules/sessions/domain/session.js";
 import type { SessionGateway } from "../modules/sessions/gateway/session.gateway.js";
 import type { User } from "../modules/users/domain/user.js";
@@ -16,6 +18,8 @@ const schemaBuilder = new SchemaBuilder<{
     currentSession?: Session;
     userGateway: UserGateway;
     sessionGateway: SessionGateway;
+    exerciseGateway: ExerciseGateway;
+    muscleGateway: MuscleGateway;
   };
   AuthScopes: {
     unauthenticated: boolean;
