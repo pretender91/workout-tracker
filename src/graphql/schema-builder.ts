@@ -7,6 +7,7 @@ import type { User } from "../modules/users/domain/user.js";
 import type { UserGateway } from "../modules/users/infrastructure/user.gateway.js";
 import type { ExerciseName } from "../value-objects/exercise-name.js";
 import type { Id } from "../value-objects/id.js";
+import type { MuscleName } from "../value-objects/muscle-name.js";
 import type { Password } from "../value-objects/password.js";
 import type { Quantity } from "../value-objects/quantity.js";
 import type { Token } from "../value-objects/token.js";
@@ -46,13 +47,17 @@ const schemaBuilder = new SchemaBuilder<{
       Input: Token;
       Output: Token;
     };
-    Quantity: {
-      Input: Quantity;
-      Output: Quantity;
-    };
     ExerciseName: {
       Input: ExerciseName;
       Output: ExerciseName;
+    };
+    MuscleName: {
+      Input: MuscleName;
+      Output: MuscleName;
+    };
+    Quantity: {
+      Input: Quantity;
+      Output: Quantity;
     };
   };
 }>({

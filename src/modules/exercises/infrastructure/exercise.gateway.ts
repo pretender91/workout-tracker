@@ -1,7 +1,7 @@
 import prismaClient from "../../../prisma-client.js";
 import type { ExerciseName } from "../../../value-objects/exercise-name.js";
 import { Id } from "../../../value-objects/id.js";
-import type { Exercise } from "../domain/exercise.js";
+import type { Exercise, Muscle } from "../domain/exercise.js";
 import type { ExerciseMapper } from "./exercise.mapper.js";
 
 export interface ExerciseGateway {
@@ -40,7 +40,7 @@ export class PrismaExerciseGateway implements ExerciseGateway {
       data: {
         id: Id.generate().valueOf(),
         name: params.name.valueOf(),
-        muscles: params.muscles,
+        muscles: params.muscles.map((muscle) => muscle.valueOf() as Muscle),
       },
     });
 
@@ -52,13 +52,14 @@ export class PrismaExerciseGateway implements ExerciseGateway {
   async updateExercise(
     params: Pick<Exercise, "id"> & Partial<Exercise>
   ): Promise<Exercise> {
-    const { id, ...exerciseToUpdate } = params;
+    const { id, muscles, ...exerciseToUpdate } = params;
     const exerciseDTO = await prismaClient.exercise.update({
       where: {
         id: id.valueOf(),
       },
       data: {
         ...exerciseToUpdate,
+        muscles: muscles?.map((muscle) => muscle.valueOf() as Muscle) ?? [],
         name: exerciseToUpdate.name?.valueOf(),
       },
     });

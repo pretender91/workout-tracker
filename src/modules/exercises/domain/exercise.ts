@@ -1,5 +1,6 @@
 import { Entity } from "../../../libs/entity/entity.js";
 import type { ExerciseName } from "../../../value-objects/exercise-name.js";
+import type { MuscleName } from "../../../value-objects/muscle-name.js";
 
 type ExerciseParams = Pick<
   Exercise,
@@ -28,7 +29,7 @@ export class Exercise extends Entity {
   public name: ExerciseName;
   public createdAt: Date;
   public updatedAt: Date;
-  public muscles: Muscle[];
+  public muscles: MuscleName[];
 
   constructor(params: ExerciseParams) {
     super(params.id);
