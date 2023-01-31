@@ -1,5 +1,5 @@
 import { UpdateExercise } from "../../modules/exercises/application/update-exercise.js";
-import { ExerciseSchema } from "../node/exercise.schema.js";
+import { ExerciseSchema, MuscleEnum } from "../node/exercise.schema.js";
 import { schemaBuilder } from "../schema-builder.js";
 
 schemaBuilder.mutationField("updateExercise", (t) =>
@@ -14,6 +14,10 @@ schemaBuilder.mutationField("updateExercise", (t) =>
       id: t.arg({ type: "Id", required: true }),
       name: t.arg({
         type: "String",
+        required: true,
+      }),
+      muscles: t.arg({
+        type: [MuscleEnum],
         required: true,
       }),
     },

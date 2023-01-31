@@ -1,5 +1,5 @@
 import { CreateExercise } from "../../modules/exercises/application/create-exercise.js";
-import { ExerciseSchema } from "../node/exercise.schema.js";
+import { ExerciseSchema, MuscleEnum } from "../node/exercise.schema.js";
 import { schemaBuilder } from "../schema-builder.js";
 
 schemaBuilder.mutationField("createExercise", (t) =>
@@ -12,6 +12,7 @@ schemaBuilder.mutationField("createExercise", (t) =>
     },
     args: {
       name: t.arg({ type: "String", required: true }),
+      muscles: t.arg({ type: [MuscleEnum], required: true }),
     },
     resolve: async (_root, args, context) => {
       const createExercise = new CreateExercise(

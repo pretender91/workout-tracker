@@ -21,11 +21,14 @@ export class PrismaExerciseGateway implements ExerciseGateway {
   constructor(params: { exerciseMapper: ExerciseMapper }) {
     this.exerciseMapper = params.exerciseMapper;
   }
-  async createExercise(params: Pick<Exercise, "name">): Promise<Exercise> {
+  async createExercise(
+    params: Pick<Exercise, "name" | "muscles">
+  ): Promise<Exercise> {
     const exerciseDTO = await prismaClient.exercise.create({
       data: {
         id: Id.generate().valueOf(),
         name: params.name,
+        muscles: params.muscles,
       },
     });
 
