@@ -4,7 +4,7 @@ import type { Exercise } from "../domain/exercise.js";
 import type { ExerciseMapper } from "./exercise.mapper.js";
 
 export interface ExerciseGateway {
-  createExercise(params: Pick<Exercise, "name">): Promise<Exercise>;
+  createExercise(params: Pick<Exercise, "name" | "muscles">): Promise<Exercise>;
 
   updateExercise(
     params: Pick<Exercise, "id"> & Partial<Exercise>
