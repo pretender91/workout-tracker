@@ -10,6 +10,14 @@ type CreateExeciseContext = {
 
 type CreateExerciseOutput = Exercise;
 
+export class ExerciseNameAlreadyTakenError extends Error {
+  public override readonly name = "ExerciseNameAlreadyTakenError";
+
+  constructor() {
+    super("Exercise name already taken");
+  }
+}
+
 export class CreateExercise extends UseCase<
   CreateExerciseParams,
   CreateExeciseContext,
@@ -17,6 +25,10 @@ export class CreateExercise extends UseCase<
 > {
   public async execute(): Promise<CreateExerciseOutput> {
     const { name, muscles } = this.params;
+
+    if (await this.context.exerciseGateway.checkExerciseNameExists(name)) {
+      throw new ExerciseNameAlreadyTakenError();
+    }
 
     return this.context.exerciseGateway.createExercise({ name, muscles });
   }

@@ -1,4 +1,5 @@
 import prismaClient from "../../../prisma-client.js";
+import type { ExerciseName } from "../../../value-objects/exercise-name.js";
 import { Id } from "../../../value-objects/id.js";
 import type { Exercise } from "../domain/exercise.js";
 import type { ExerciseMapper } from "./exercise.mapper.js";
@@ -13,6 +14,7 @@ export interface ExerciseGateway {
   removeExercise(params: Pick<Exercise, "id">): Promise<Id | null>;
 
   findById(params: Pick<Exercise, "id">): Promise<Exercise | null>;
+  checkExerciseNameExists(name: ExerciseName): Promise<boolean>;
 }
 
 export class PrismaExerciseGateway implements ExerciseGateway {
@@ -20,6 +22,16 @@ export class PrismaExerciseGateway implements ExerciseGateway {
 
   constructor(params: { exerciseMapper: ExerciseMapper }) {
     this.exerciseMapper = params.exerciseMapper;
+  }
+
+  async checkExerciseNameExists(name: ExerciseName): Promise<boolean> {
+    const exercise = await prismaClient.exercise.findUnique({
+      where: {
+        name: name.valueOf(),
+      },
+    });
+
+    return !!exercise;
   }
   async createExercise(
     params: Pick<Exercise, "name" | "muscles">
