@@ -1,14 +1,15 @@
 import SchemaBuilder from "@pothos/core";
 import ScopeAuthPlugin from "@pothos/plugin-scope-auth";
-import type { Id } from "src/value-objects/id.js";
-import type { Token } from "src/value-objects/token.js";
 import type { ExerciseGateway } from "../modules/exercises/infrastructure/exercise.gateway.js";
 import type { Session } from "../modules/sessions/domain/session.js";
 import type { SessionGateway } from "../modules/sessions/gateway/session.gateway.js";
 import type { User } from "../modules/users/domain/user.js";
 import type { UserGateway } from "../modules/users/infrastructure/user.gateway.js";
+import type { ExerciseName } from "../value-objects/exercise-name.js";
+import type { Id } from "../value-objects/id.js";
 import type { Password } from "../value-objects/password.js";
 import type { Quantity } from "../value-objects/quantity.js";
+import type { Token } from "../value-objects/token.js";
 import type { Username } from "../value-objects/username.js";
 
 const schemaBuilder = new SchemaBuilder<{
@@ -48,6 +49,10 @@ const schemaBuilder = new SchemaBuilder<{
     Quantity: {
       Input: Quantity;
       Output: Quantity;
+    };
+    ExerciseName: {
+      Input: ExerciseName;
+      Output: ExerciseName;
     };
   };
 }>({

@@ -1,4 +1,5 @@
 import { Entity } from "../../../libs/entity/entity.js";
+import type { ExerciseName } from "../../../value-objects/exercise-name.js";
 
 type ExerciseParams = Pick<
   Exercise,
@@ -24,7 +25,7 @@ export enum Muscle {
 }
 
 export class Exercise extends Entity {
-  public name: string;
+  public name: ExerciseName;
   public createdAt: Date;
   public updatedAt: Date;
   public muscles: Muscle[];

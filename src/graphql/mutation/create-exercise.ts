@@ -11,7 +11,7 @@ schemaBuilder.mutationField("createExercise", (t) =>
       admin: true,
     },
     args: {
-      name: t.arg({ type: "String", required: true }),
+      name: t.arg({ type: "ExerciseName", required: true }),
       muscles: t.arg({ type: [MuscleEnum], required: true }),
     },
     resolve: async (_root, args, context) => {

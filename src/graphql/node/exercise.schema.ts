@@ -11,7 +11,7 @@ export const ExerciseSchema = schemaBuilder.objectType(Exercise, {
   isTypeOf: (value) => value instanceof Exercise,
   interfaces: [NodeSchema],
   fields: (t) => ({
-    name: t.expose("name", { type: "String" }),
+    name: t.expose("name", { type: "ExerciseName" }),
     createdAt: t.expose("createdAt", { type: "Date" }),
     updatedAt: t.expose("updatedAt", { type: "Date" }),
     muscles: t.expose("muscles", { type: [MuscleEnum] }),

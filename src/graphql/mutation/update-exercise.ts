@@ -13,7 +13,7 @@ schemaBuilder.mutationField("updateExercise", (t) =>
     args: {
       id: t.arg({ type: "Id", required: true }),
       name: t.arg({
-        type: "String",
+        type: "ExerciseName",
         required: true,
       }),
       muscles: t.arg({

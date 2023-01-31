@@ -27,7 +27,7 @@ export class PrismaExerciseGateway implements ExerciseGateway {
     const exerciseDTO = await prismaClient.exercise.create({
       data: {
         id: Id.generate().valueOf(),
-        name: params.name,
+        name: params.name.valueOf(),
         muscles: params.muscles,
       },
     });
@@ -45,7 +45,10 @@ export class PrismaExerciseGateway implements ExerciseGateway {
       where: {
         id: id.valueOf(),
       },
-      data: exerciseToUpdate,
+      data: {
+        ...exerciseToUpdate,
+        name: exerciseToUpdate.name?.valueOf(),
+      },
     });
     const exercise = this.exerciseMapper.toDomain(exerciseDTO);
 
