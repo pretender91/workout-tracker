@@ -2,7 +2,7 @@ import { UseCase } from "../../../libs/use-case.js";
 import type { Exercise } from "../domain/exercise.js";
 import type { ExerciseGateway } from "../infrastructure/exercise.gateway.js";
 
-type CreateExerciseParams = Pick<Exercise, "name">;
+type CreateExerciseParams = Pick<Exercise, "name" | "muscles">;
 
 type CreateExeciseContext = {
   exerciseGateway: ExerciseGateway;
@@ -16,8 +16,8 @@ export class CreateExercise extends UseCase<
   CreateExerciseOutput
 > {
   public async execute(): Promise<CreateExerciseOutput> {
-    const { name } = this.params;
+    const { name, muscles } = this.params;
 
-    return this.context.exerciseGateway.createExercise({ name });
+    return this.context.exerciseGateway.createExercise({ name, muscles });
   }
 }

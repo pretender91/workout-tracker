@@ -18,6 +18,7 @@ schemaBuilder.mutationField("createExercise", (t) =>
       const createExercise = new CreateExercise(
         {
           name: args.name,
+          muscles: args.muscles,
         },
         context
       );

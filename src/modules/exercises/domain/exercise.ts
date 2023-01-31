@@ -35,6 +35,6 @@ export class Exercise extends Entity {
     this.name = params.name;
     this.createdAt = params.createdAt;
     this.updatedAt = params.updatedAt;
-    this.muscles = [];
+    this.muscles = params.muscles;
   }
 }
