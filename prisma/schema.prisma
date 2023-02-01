@@ -26,3 +26,29 @@ model Session {
   userId    String   @db.Uuid
   createdAt DateTime @default(now()) @db.Timestamp(6)
 }
+
+model Exercise {
+  id        String   @id @db.Uuid
+  name      String   @unique @db.VarChar(64)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+  muscles   Muscle[] @default([])
+}
+
+enum Muscle {
+  Abdominals
+  Obliques
+  Forearms
+  Biceps
+  Shoulders
+  Traps
+  Chest
+  Quads
+  Hamstrings
+  Lowerback
+  Glutes
+  Lats
+  Traps_Middle
+  Calves
+  Triceps
+}
