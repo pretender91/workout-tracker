@@ -5,4 +5,5 @@ import "./muscle-name.js";
 import "./password.js";
 import "./quantity.js";
 import "./token.js";
+import "./user-role.js";
 import "./username.js";

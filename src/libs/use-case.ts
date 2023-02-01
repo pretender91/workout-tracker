@@ -19,3 +19,7 @@ export abstract class UseCase<Params extends {}, Context extends {}, Output> {
       .getOrThrow();
   }
 }
+
+export interface UseCaseV2<In, Out> {
+  execute(input: In): Promise<Out>;
+}

@@ -8,7 +8,7 @@ schemaBuilder.mutationField("removeSession", (t) =>
     authScopes: {
       unauthenticated: false,
       user: true,
-      admin: false,
+      admin: true,
     },
     args: {
       token: t.arg({ type: "Token", required: true }),

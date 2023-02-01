@@ -68,6 +68,19 @@ export class Connection<E> {
     this.edges = params.edges;
     this.pageInfo = params.pageInfo;
   }
+
+  public static empty<E>(): Connection<E> {
+    return new Connection<E>({
+      edges: [],
+      pageInfo: new PageInfo({
+        hasNextPage: false,
+        hasPreviousPage: false,
+        startCursor: undefined,
+        endCursor: undefined,
+      }),
+      totalCount: 0,
+    });
+  }
 }
 
 export function parsePaginationParams(params: {

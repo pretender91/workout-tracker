@@ -6,8 +6,6 @@ schemaBuilder.mutationField("createExercise", (t) =>
   t.field({
     type: ExerciseSchema,
     authScopes: {
-      unauthenticated: false,
-      user: true,
       admin: true,
     },
     args: {
@@ -15,15 +13,8 @@ schemaBuilder.mutationField("createExercise", (t) =>
       muscles: t.arg({ type: ["MuscleName"], required: true }),
     },
     resolve: async (_root, args, context) => {
-      const createExercise = new CreateExercise(
-        {
-          name: args.name,
-          muscles: args.muscles,
-        },
-        context
-      );
-
-      return createExercise.execute();
+      const createExercise = new CreateExercise(context);
+      return createExercise.execute(args);
     },
   })
 );

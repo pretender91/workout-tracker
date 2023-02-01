@@ -1,5 +1,6 @@
-import { parsePaginationParams } from "../../libs/pagination.js";
+import { Connection, parsePaginationParams } from "../../libs/pagination.js";
 import { FindUserSessions } from "../../modules/sessions/application/find-user-sessions.js";
+import type { Session } from "../../modules/sessions/domain/session.js";
 import { FindUserById } from "../../modules/users/application/find-user-by-id.js";
 import type { User } from "../../modules/users/domain/user.js";
 import { SessionsConnectionSchema } from "../connections/sessions-connection.js";
@@ -8,12 +9,10 @@ import { schemaBuilder } from "../schema-builder.js";
 schemaBuilder.queryField("sessions", (t) =>
   t.field({
     authScopes: {
-      unauthenticated: false,
-      user: true,
       admin: true,
+      user: true,
     },
     type: SessionsConnectionSchema,
-    nullable: true,
     args: {
       userId: t.arg({
         type: "Id",
@@ -34,10 +33,10 @@ schemaBuilder.queryField("sessions", (t) =>
     },
     resolve: async (_root, args, context) => {
       if (!context.currentUser) {
-        return null;
+        return Connection.empty<Session>();
       }
 
-      let user: User | null = null;
+      let user: User | null;
 
       if (args.userId) {
         const findUserById = new FindUserById(
@@ -52,7 +51,7 @@ schemaBuilder.queryField("sessions", (t) =>
       }
 
       if (!user) {
-        return null;
+        return Connection.empty<Session>();
       }
 
       const pagination = parsePaginationParams(args);

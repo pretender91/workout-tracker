@@ -7,8 +7,6 @@ schemaBuilder.mutationField("createSession", (t) =>
     type: SessionSchema,
     authScopes: {
       unauthenticated: true,
-      user: false,
-      admin: false,
     },
     args: {
       username: t.arg({ type: "Username", required: true }),

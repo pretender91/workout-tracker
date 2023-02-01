@@ -4,11 +4,6 @@ import { schemaBuilder } from "../schema-builder.js";
 
 schemaBuilder.queryField("exercise", (t) =>
   t.field({
-    authScopes: {
-      unauthenticated: false,
-      user: true,
-      admin: true,
-    },
     type: ExerciseSchema,
     nullable: true,
     args: {

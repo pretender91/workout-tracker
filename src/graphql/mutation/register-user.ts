@@ -19,6 +19,9 @@ const RegisterUserSchema = schemaBuilder
 
 schemaBuilder.mutationField("registerUser", (t) =>
   t.field({
+    authScopes: {
+      unauthenticated: true,
+    },
     type: RegisterUserSchema,
     args: {
       username: t.arg({ type: "Username", required: true }),

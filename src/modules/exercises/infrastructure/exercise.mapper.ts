@@ -12,6 +12,7 @@ export class ExerciseMapper extends Mapper<Exercise, ExerciseDTO> {
       name: domain.name.valueOf(),
       createdAt: domain.createdAt,
       updatedAt: domain.updatedAt,
+      createdById: domain.createdById.valueOf(),
       muscles: domain.muscles.map((item) => item.valueOf()),
     };
   }
@@ -22,6 +23,7 @@ export class ExerciseMapper extends Mapper<Exercise, ExerciseDTO> {
       name: ExerciseName.fromString(dto.name),
       createdAt: new Date(dto.createdAt),
       updatedAt: new Date(dto.updatedAt),
+      createdById: Id.fromString(dto.createdById),
       muscles: dto.muscles.map((muscle) => MuscleName.fromString(muscle)),
     });
   }

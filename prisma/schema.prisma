@@ -11,12 +11,19 @@ datasource db {
 }
 
 model User {
-  id        String    @id @db.Uuid
-  username  String    @unique @db.VarChar(15)
-  password  String    @db.VarChar(64)
-  createdAt DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt DateTime  @updatedAt @db.Timestamp(6)
+  id        String     @id @db.Uuid
+  username  String     @unique @db.VarChar(15)
+  role      UserRole   @default(User)
+  password  String     @db.VarChar(64)
+  createdAt DateTime   @default(now()) @db.Timestamp(6)
+  updatedAt DateTime   @updatedAt @db.Timestamp(6)
   sessions  Session[]
+  exercises Exercise[]
+}
+
+enum UserRole {
+  Admin
+  User
 }
 
 model Session {
@@ -28,11 +35,13 @@ model Session {
 }
 
 model Exercise {
-  id        String   @id @db.Uuid
-  name      String   @unique @db.VarChar(64)
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @updatedAt @db.Timestamp(6)
-  muscles   Muscle[] @default([])
+  id          String   @id @db.Uuid
+  name        String   @unique @db.VarChar(64)
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  createdById String   @db.Uuid
+  updatedAt   DateTime @updatedAt @db.Timestamp(6)
+  muscles     Muscle[] @default([])
 }
 
 enum Muscle {

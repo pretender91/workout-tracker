@@ -13,6 +13,8 @@ import type { Quantity } from "../value-objects/quantity.js";
 import type { Token } from "../value-objects/token.js";
 import type { Username } from "../value-objects/username.js";
 
+class UserRole {}
+
 const schemaBuilder = new SchemaBuilder<{
   Context: {
     currentUser?: User;
@@ -39,6 +41,10 @@ const schemaBuilder = new SchemaBuilder<{
       Input: Username;
       Output: Username;
     };
+    UserRole: {
+      Input: UserRole;
+      Output: UserRole;
+    };
     Password: {
       Input: Password;
       Output: Password;
@@ -64,13 +70,17 @@ const schemaBuilder = new SchemaBuilder<{
   plugins: [ScopeAuthPlugin],
   scopeAuthOptions: {
     cacheKey: (val) => JSON.stringify(val),
-    runScopesOnType: true,
   },
   authScopes: async (context) => {
+    console.log("authScopes", {
+      unauthenticated: !context.currentUser,
+      user: context.currentUser?.role.isUser === true,
+      admin: context.currentUser?.role.isAdmin === true,
+    });
     return {
       unauthenticated: !context.currentUser,
-      user: !!context.currentUser,
-      admin: false,
+      user: context.currentUser?.role.isUser === true,
+      admin: context.currentUser?.role.isAdmin === true,
     };
   },
 });
