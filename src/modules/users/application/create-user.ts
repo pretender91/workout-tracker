@@ -1,4 +1,4 @@
-import { UseCase } from "../../../libs/use-case.js";
+import type { UseCase } from "../../../libs/use-case.js";
 import type { Password } from "../../../value-objects/password.js";
 import type { Username } from "../../../value-objects/username.js";
 import type { User } from "../domain/user.js";
@@ -23,18 +23,18 @@ export class UsernameAlreadyTakenError extends Error {
   }
 }
 
-export class CreateUser extends UseCase<
-  CreateUserParams,
-  CreateUserContext,
-  CreateUserOutput
-> {
-  public async execute(): Promise<CreateUserOutput> {
-    const { username, password } = this.params;
+export class CreateUser implements UseCase<CreateUserParams, CreateUserOutput> {
+  private context: CreateUserContext;
 
-    if (await this.context.userGateway.checkUsernameExists(username)) {
+  constructor(context: CreateUserContext) {
+    this.context = context;
+  }
+
+  public async execute(params: CreateUserParams): Promise<CreateUserOutput> {
+    if (await this.context.userGateway.checkUsernameExists(params.username)) {
       throw new UsernameAlreadyTakenError();
     }
 
-    return this.context.userGateway.createUser({ username, password });
+    return this.context.userGateway.createUser(params);
   }
 }

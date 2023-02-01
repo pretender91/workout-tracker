@@ -14,8 +14,8 @@ schemaBuilder.mutationField("removeSession", (t) =>
       token: t.arg({ type: "Token", required: true }),
     },
     resolve: async (_root, args, context) => {
-      const removeSession = new RemoveSession(args, context);
-      return removeSession.execute();
+      const removeSession = new RemoveSession(context);
+      return removeSession.execute(args);
     },
   })
 );

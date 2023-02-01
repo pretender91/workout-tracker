@@ -39,13 +39,8 @@ schemaBuilder.queryField("sessions", (t) =>
       let user: User | null;
 
       if (args.userId) {
-        const findUserById = new FindUserById(
-          {
-            id: args.userId,
-          },
-          context
-        );
-        user = await findUserById.execute();
+        const findUserById = new FindUserById(context);
+        user = await findUserById.execute({ id: args.userId });
       } else {
         user = context.currentUser;
       }
@@ -55,12 +50,11 @@ schemaBuilder.queryField("sessions", (t) =>
       }
 
       const pagination = parsePaginationParams(args);
-      const findUserSessions = new FindUserSessions(
-        { user, pagination },
-        { sessionGateway: context.sessionGateway }
-      );
+      const findUserSessions = new FindUserSessions({
+        sessionGateway: context.sessionGateway,
+      });
 
-      return findUserSessions.execute();
+      return findUserSessions.execute({ user, pagination });
     },
   })
 );

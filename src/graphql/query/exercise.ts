@@ -13,14 +13,9 @@ schemaBuilder.queryField("exercise", (t) =>
       }),
     },
     resolve: async (_root, args, context) => {
-      const findExerciseById = new FindExerciseById(
-        {
-          id: args.id,
-        },
-        context
-      );
+      const findExerciseById = new FindExerciseById(context);
 
-      return findExerciseById.execute();
+      return findExerciseById.execute({ id: args.id });
     },
   })
 );

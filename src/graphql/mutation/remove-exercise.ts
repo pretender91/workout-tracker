@@ -14,9 +14,9 @@ schemaBuilder.mutationField("removeExercise", (t) =>
       id: t.arg({ type: "Id", required: true }),
     },
     resolve: async (_root, args, context) => {
-      const removeExercise = new RemoveExercise(args, context);
+      const removeExercise = new RemoveExercise(context);
 
-      return removeExercise.execute();
+      return removeExercise.execute({ id: args.id });
     },
   })
 );

@@ -1,4 +1,4 @@
-import { UseCase } from "../../../libs/use-case.js";
+import type { UseCase } from "../../../libs/use-case.js";
 import type { User } from "../../users/domain/user.js";
 import type { UserGateway } from "../../users/infrastructure/user.gateway.js";
 import type { Session } from "../domain/session.js";
@@ -16,14 +16,18 @@ type RemoveSessionContext = {
 
 type RemoveSessionOutput = Promise<Session["id"] | null>;
 
-export class RemoveSession extends UseCase<
-  RemoveSessionParams,
-  RemoveSessionContext,
-  RemoveSessionOutput
-> {
-  public async execute(): Promise<RemoveSessionOutput> {
-    const { token } = this.params;
+export class RemoveSession
+  implements UseCase<RemoveSessionParams, RemoveSessionOutput>
+{
+  private context: RemoveSessionContext;
 
+  constructor(context: RemoveSessionContext) {
+    this.context = context;
+  }
+
+  public async execute({
+    token,
+  }: RemoveSessionParams): Promise<RemoveSessionOutput> {
     const session = await this.context.sessionGateway.findByToken(token);
 
     if (session === null) {

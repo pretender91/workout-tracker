@@ -1,5 +1,5 @@
 import type { Connection, PaginationParams } from "../../../libs/pagination.js";
-import type { UseCaseV2 } from "../../../libs/use-case.js";
+import type { UseCase } from "../../../libs/use-case.js";
 import type { Exercise } from "../domain/exercise.js";
 import type { ExerciseGateway } from "../infrastructure/exercise.gateway.js";
 
@@ -14,7 +14,7 @@ type Input = {
 
 type Output = Connection<Exercise>;
 
-export class FindExercises implements UseCaseV2<Input, Output> {
+export class FindExercises implements UseCase<Input, Output> {
   private readonly exerciseGateway: ExerciseGateway;
 
   constructor(context: { exerciseGateway: ExerciseGateway }) {

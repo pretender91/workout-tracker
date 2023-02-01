@@ -1,4 +1,4 @@
-import { UseCase } from "../../../libs/use-case.js";
+import type { UseCase } from "../../../libs/use-case.js";
 import type { Password } from "../../../value-objects/password.js";
 import type { Username } from "../../../value-objects/username.js";
 import type { UserGateway } from "../../users/infrastructure/user.gateway.js";
@@ -25,14 +25,19 @@ export class WrongCredentialsError extends Error {
   }
 }
 
-export class CreateSession extends UseCase<
-  CreateSessionParams,
-  CreateSessionContext,
-  CreateSessionOutput
-> {
-  public async execute(): Promise<CreateSessionOutput> {
-    const { username, password } = this.params;
+export class CreateSession
+  implements UseCase<CreateSessionParams, CreateSessionOutput>
+{
+  private context: CreateSessionContext;
 
+  constructor(context: CreateSessionContext) {
+    this.context = context;
+  }
+
+  public async execute({
+    username,
+    password,
+  }: CreateSessionParams): Promise<CreateSessionOutput> {
     const user = await this.context.userGateway.findByUsernameAndPassword({
       username,
       password,

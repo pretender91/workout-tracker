@@ -14,11 +14,8 @@ schemaBuilder.mutationField("removeCurrentSession", (t) =>
       if (!context.currentSession) {
         return null;
       }
-      const removeSession = new RemoveSession(
-        { token: context.currentSession.token },
-        context
-      );
-      return removeSession.execute();
+      const removeSession = new RemoveSession(context);
+      return removeSession.execute({ token: context.currentSession.token });
     },
   })
 );

@@ -1,4 +1,4 @@
-import { UseCase } from "../../../libs/use-case.js";
+import type { UseCase } from "../../../libs/use-case.js";
 import type { Exercise } from "../domain/exercise.js";
 import type { ExerciseGateway } from "../infrastructure/exercise.gateway.js";
 
@@ -10,12 +10,18 @@ type UpdateExerciseContext = {
 
 type UpdateExerciseOutput = Exercise;
 
-export class UpdateExercise extends UseCase<
-  UpdateExerciseParams,
-  UpdateExerciseContext,
-  UpdateExerciseOutput
-> {
-  public async execute(): Promise<Exercise> {
-    return this.context.exerciseGateway.updateExercise(this.params);
+export class UpdateExercise
+  implements UseCase<UpdateExerciseParams, UpdateExerciseOutput>
+{
+  private context: UpdateExerciseContext;
+
+  constructor(context: UpdateExerciseContext) {
+    this.context = context;
+  }
+
+  public async execute(
+    params: UpdateExerciseParams
+  ): Promise<UpdateExerciseOutput> {
+    return this.context.exerciseGateway.updateExercise(params);
   }
 }
