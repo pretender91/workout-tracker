@@ -36,12 +36,9 @@ export const UserSchema = schemaBuilder.objectType(User, {
       resolve: async (user, args, context) => {
         const pagination = parsePaginationParams(args);
 
-        const findUserSessions = new FindUserSessions(
-          { user, pagination },
-          context
-        );
+        const findUserSessions = new FindUserSessions(context);
 
-        return findUserSessions.execute();
+        return findUserSessions.execute({ user, pagination });
       },
     }),
     exercises: t.field({
@@ -81,8 +78,8 @@ schemaBuilder.queryField("user", (t) =>
       id: t.arg({ type: "Id", required: true }),
     },
     resolve: async (_root, args, context) => {
-      const findUserById = new FindUserById(args, context);
-      return findUserById.execute();
+      const findUserById = new FindUserById(context);
+      return findUserById.execute(args);
     },
   })
 );

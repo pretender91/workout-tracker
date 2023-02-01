@@ -1,4 +1,4 @@
-import { UseCase } from "../../../libs/use-case.js";
+import type { UseCase } from "../../../libs/use-case.js";
 import type { Id } from "../../../value-objects/id.js";
 import type { User } from "../domain/user.js";
 import type { UserGateway } from "../infrastructure/user.gateway.js";
@@ -13,15 +13,20 @@ type FindUserByIdContext = {
 
 type FindUserByIdOutput = User | null;
 
-export class FindUserById extends UseCase<
-  FindUserByIdParams,
-  FindUserByIdContext,
-  FindUserByIdOutput
-> {
-  public async execute(): Promise<FindUserByIdOutput> {
-    const { id } = this.params;
+export class FindUserById
+  implements UseCase<FindUserByIdParams, FindUserByIdOutput>
+{
+  private context: FindUserByIdContext;
+
+  constructor(context: FindUserByIdContext) {
+    this.context = context;
+  }
+
+  public async execute(
+    params: FindUserByIdParams
+  ): Promise<FindUserByIdOutput> {
     const { userGateway } = this.context;
 
-    return userGateway.findById(id);
+    return userGateway.findById(params.id);
   }
 }

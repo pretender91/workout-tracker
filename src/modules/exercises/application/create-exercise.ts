@@ -1,4 +1,4 @@
-import type { UseCaseV2 } from "../../../libs/use-case.js";
+import type { UseCase } from "../../../libs/use-case.js";
 import type { User } from "../../users/domain/user.js";
 import type { Exercise } from "../domain/exercise.js";
 import type { ExerciseGateway } from "../infrastructure/exercise.gateway.js";
@@ -21,7 +21,7 @@ export class ExerciseNameAlreadyTakenError extends Error {
 }
 
 export class CreateExercise
-  implements UseCaseV2<CreateExerciseInput, CreateExerciseOutput>
+  implements UseCase<CreateExerciseInput, CreateExerciseOutput>
 {
   private context: CreateExerciseContext;
 

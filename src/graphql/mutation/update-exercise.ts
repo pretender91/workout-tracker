@@ -22,8 +22,8 @@ schemaBuilder.mutationField("updateExercise", (t) =>
       }),
     },
     resolve: async (_root, args, context) => {
-      const updateExercise = new UpdateExercise(args, context);
-      return updateExercise.execute();
+      const updateExercise = new UpdateExercise(context);
+      return updateExercise.execute(args);
     },
   })
 );

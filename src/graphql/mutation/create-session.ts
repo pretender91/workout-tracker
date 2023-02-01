@@ -13,8 +13,8 @@ schemaBuilder.mutationField("createSession", (t) =>
       password: t.arg({ type: "Password", required: true }),
     },
     resolve: async (_root, args, context) => {
-      const createSession = new CreateSession(args, context);
-      return createSession.execute();
+      const createSession = new CreateSession(context);
+      return createSession.execute(args);
     },
   })
 );

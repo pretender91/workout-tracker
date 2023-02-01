@@ -16,12 +16,9 @@ export const ExerciseSchema = schemaBuilder.objectType(Exercise, {
     createdBy: t.field({
       type: UserSchema,
       resolve: async (exercise, _args, context) => {
-        const findUserById = new FindUserById(
-          { id: exercise.createdById },
-          context
-        );
+        const findUserById = new FindUserById(context);
 
-        const author = await findUserById.execute();
+        const author = await findUserById.execute({ id: exercise.createdById });
 
         if (!author) {
           throw new Error("Author not found");

@@ -1,4 +1,4 @@
-import { UseCase } from "../../../libs/use-case.js";
+import type { UseCase } from "../../../libs/use-case.js";
 import type { Password } from "../../../value-objects/password.js";
 import type { Username } from "../../../value-objects/username.js";
 import type { Session } from "../../sessions/domain/session.js";
@@ -21,13 +21,19 @@ type RegisterUserOutput = {
   session: Session;
 };
 
-export class RegisterUser extends UseCase<
-  RegisterUserParams,
-  RegisterUserContext,
-  RegisterUserOutput
-> {
-  public async execute(): Promise<RegisterUserOutput> {
-    const { username, password } = this.params;
+export class RegisterUser
+  implements UseCase<RegisterUserParams, RegisterUserOutput>
+{
+  private context: RegisterUserContext;
+
+  constructor(context: RegisterUserContext) {
+    this.context = context;
+  }
+
+  public async execute({
+    username,
+    password,
+  }: RegisterUserParams): Promise<RegisterUserOutput> {
     const { userGateway, sessionGateway } = this.context;
 
     const user = await userGateway.createUser({ username, password });
