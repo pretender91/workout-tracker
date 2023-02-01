@@ -1,7 +1,7 @@
 import prismaClient from "../../../prisma-client.js";
 import type { ExerciseName } from "../../../value-objects/exercise-name.js";
 import { Id } from "../../../value-objects/id.js";
-import type { Exercise, Muscle } from "../domain/exercise.js";
+import type { Exercise } from "../domain/exercise.js";
 import type { ExerciseMapper } from "./exercise.mapper.js";
 
 export interface ExerciseGateway {
@@ -14,6 +14,7 @@ export interface ExerciseGateway {
   removeExercise(params: Pick<Exercise, "id">): Promise<Id | null>;
 
   findById(params: Pick<Exercise, "id">): Promise<Exercise | null>;
+
   checkExerciseNameExists(name: ExerciseName): Promise<boolean>;
 }
 
@@ -33,6 +34,7 @@ export class PrismaExerciseGateway implements ExerciseGateway {
 
     return !!exercise;
   }
+
   async createExercise(
     params: Pick<Exercise, "name" | "muscles">
   ): Promise<Exercise> {
@@ -40,13 +42,11 @@ export class PrismaExerciseGateway implements ExerciseGateway {
       data: {
         id: Id.generate().valueOf(),
         name: params.name.valueOf(),
-        muscles: params.muscles.map((muscle) => muscle.valueOf() as Muscle),
+        muscles: params.muscles.map((muscle) => muscle.valueOf()),
       },
     });
 
-    const exercise = this.exerciseMapper.toDomain(exerciseDTO);
-
-    return exercise;
+    return this.exerciseMapper.toDomain(exerciseDTO);
   }
 
   async updateExercise(
@@ -59,13 +59,11 @@ export class PrismaExerciseGateway implements ExerciseGateway {
       },
       data: {
         ...exerciseToUpdate,
-        muscles: muscles?.map((muscle) => muscle.valueOf() as Muscle) ?? [],
+        muscles: muscles?.map((muscle) => muscle.valueOf()),
         name: exerciseToUpdate.name?.valueOf(),
       },
     });
-    const exercise = this.exerciseMapper.toDomain(exerciseDTO);
-
-    return exercise;
+    return this.exerciseMapper.toDomain(exerciseDTO);
   }
 
   async removeExercise(params: Pick<Exercise, "id">): Promise<Id | null> {
@@ -77,6 +75,7 @@ export class PrismaExerciseGateway implements ExerciseGateway {
 
     return params.id;
   }
+
   async findById(params: Pick<Exercise, "id">): Promise<Exercise | null> {
     const exerciseDTO = await prismaClient.exercise.findUnique({
       where: {
@@ -88,8 +87,6 @@ export class PrismaExerciseGateway implements ExerciseGateway {
       return null;
     }
 
-    const exercise = this.exerciseMapper.toDomain(exerciseDTO);
-
-    return exercise;
+    return this.exerciseMapper.toDomain(exerciseDTO);
   }
 }

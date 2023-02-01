@@ -2,7 +2,7 @@ import { Mapper } from "../../../libs/mapper/mapper.js";
 import { ExerciseName } from "../../../value-objects/exercise-name.js";
 import { Id } from "../../../value-objects/id.js";
 import { MuscleName } from "../../../value-objects/muscle-name.js";
-import { Exercise, Muscle } from "../domain/exercise.js";
+import { Exercise } from "../domain/exercise.js";
 import type { ExerciseDTO } from "./exercise.dto.js";
 
 export class ExerciseMapper extends Mapper<Exercise, ExerciseDTO> {
@@ -12,7 +12,7 @@ export class ExerciseMapper extends Mapper<Exercise, ExerciseDTO> {
       name: domain.name.valueOf(),
       createdAt: domain.createdAt,
       updatedAt: domain.updatedAt,
-      muscles: domain.muscles.map((item) => item.valueOf() as Muscle),
+      muscles: domain.muscles.map((item) => item.valueOf()),
     };
   }
 
