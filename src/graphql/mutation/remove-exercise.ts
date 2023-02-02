@@ -6,8 +6,6 @@ schemaBuilder.mutationField("removeExercise", (t) =>
     type: "Id",
     nullable: true,
     authScopes: {
-      unauthenticated: false,
-      user: false,
       admin: true,
     },
     args: {
