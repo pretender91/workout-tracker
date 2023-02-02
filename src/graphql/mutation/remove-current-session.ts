@@ -7,7 +7,7 @@ schemaBuilder.mutationField("removeCurrentSession", (t) =>
     nullable: true,
     authScopes: {
       user: true,
-      admin: false,
+      admin: true,
     },
     args: {},
     resolve: async (_root, _args, context) => {

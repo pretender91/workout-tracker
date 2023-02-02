@@ -6,8 +6,6 @@ schemaBuilder.mutationField("updateExercise", (t) =>
   t.field({
     type: ExerciseSchema,
     authScopes: {
-      unauthenticated: false,
-      user: false,
       admin: true,
     },
     args: {
