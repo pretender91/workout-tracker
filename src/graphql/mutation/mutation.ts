@@ -1,8 +1,11 @@
 import "./create-exercise.js";
 import "./create-session.js";
 import "./create-user.js";
+import "./create-workout.js";
 import "./register-user.js";
 import "./remove-current-session.js";
 import "./remove-exercise.js";
 import "./remove-session.js";
+import "./remove-workout.js";
 import "./update-exercise.js";
+import "./update-workout.js";

@@ -1,5 +1,6 @@
 import type { Id } from "../value-objects/id.js";
 import { Quantity } from "../value-objects/quantity.js";
+import type { Entity } from "./entity/entity.js";
 
 export class PageInfo {
   public readonly hasNextPage: boolean;
@@ -79,6 +80,26 @@ export class Connection<E> {
         endCursor: undefined,
       }),
       totalCount: 0,
+    });
+  }
+
+  public static fromEntities<E extends Entity>(params: {
+    entities: E[];
+    totalCount: number;
+    hasNextPage?: boolean;
+    hasPreviousPage?: boolean;
+  }): Connection<E> {
+    return new Connection<E>({
+      edges: params.entities.map(
+        (entity) => new Edge<E>({ node: entity, cursor: entity.id })
+      ),
+      pageInfo: new PageInfo({
+        hasNextPage: params.hasNextPage ?? false,
+        hasPreviousPage: params.hasPreviousPage ?? false,
+        startCursor: params.entities.at(0)?.id,
+        endCursor: params.entities.at(-1)?.id,
+      }),
+      totalCount: params.entities.length,
     });
   }
 }

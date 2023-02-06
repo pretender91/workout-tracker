@@ -1,10 +1,6 @@
 import SchemaBuilder from "@pothos/core";
 import ScopeAuthPlugin from "@pothos/plugin-scope-auth";
-import type { ExerciseGateway } from "../modules/exercises/infrastructure/exercise.gateway.js";
-import type { Session } from "../modules/sessions/domain/session.js";
-import type { SessionGateway } from "../modules/sessions/gateway/session.gateway.js";
-import type { User } from "../modules/users/domain/user.js";
-import type { UserGateway } from "../modules/users/infrastructure/user.gateway.js";
+import type { Context } from "src/context.js";
 import type { ExerciseName } from "../value-objects/exercise-name.js";
 import type { Id } from "../value-objects/id.js";
 import type { MuscleName } from "../value-objects/muscle-name.js";
@@ -12,17 +8,12 @@ import type { Password } from "../value-objects/password.js";
 import type { Quantity } from "../value-objects/quantity.js";
 import type { Token } from "../value-objects/token.js";
 import type { Username } from "../value-objects/username.js";
+import type { Weight } from "../value-objects/weight.js";
 
 class UserRole {}
 
 const schemaBuilder = new SchemaBuilder<{
-  Context: {
-    currentUser?: User;
-    currentSession?: Session;
-    userGateway: UserGateway;
-    sessionGateway: SessionGateway;
-    exerciseGateway: ExerciseGateway;
-  };
+  Context: Context;
   AuthScopes: {
     unauthenticated: boolean;
     user: boolean;
@@ -64,6 +55,10 @@ const schemaBuilder = new SchemaBuilder<{
     Quantity: {
       Input: Quantity;
       Output: Quantity;
+    };
+    Weight: {
+      Input: Weight;
+      Output: Weight;
     };
   };
 }>({

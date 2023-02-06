@@ -19,6 +19,7 @@ model User {
   updatedAt DateTime   @updatedAt @db.Timestamp(6)
   sessions  Session[]
   exercises Exercise[]
+  workouts  Workout[]
 }
 
 enum UserRole {
@@ -35,13 +36,14 @@ model Session {
 }
 
 model Exercise {
-  id          String   @id @db.Uuid
-  name        String   @unique @db.VarChar(64)
-  createdAt   DateTime @default(now()) @db.Timestamp(6)
-  createdBy   User     @relation(fields: [createdById], references: [id])
-  createdById String   @db.Uuid
-  updatedAt   DateTime @updatedAt @db.Timestamp(6)
-  muscles     Muscle[] @default([])
+  id                    String                 @id @db.Uuid
+  name                  String                 @unique @db.VarChar(64)
+  createdAt             DateTime               @default(now()) @db.Timestamp(6)
+  createdBy             User                   @relation(fields: [createdById], references: [id])
+  createdById           String                 @db.Uuid
+  updatedAt             DateTime               @updatedAt @db.Timestamp(6)
+  muscles               Muscle[]               @default([])
+  workoutBlockExercises WorkoutBlockExercise[]
 }
 
 enum Muscle {
@@ -60,4 +62,48 @@ enum Muscle {
   Traps_Middle
   Calves
   Triceps
+}
+
+model Workout {
+  id        String         @id @db.Uuid
+  date      DateTime       @db.Date
+  user      User           @relation(fields: [userId], references: [id])
+  userId    String         @db.Uuid
+  createdAt DateTime       @default(now()) @db.Timestamp(6)
+  updatedAt DateTime       @updatedAt @db.Timestamp(6)
+  blocks    WorkoutBlock[]
+}
+
+model WorkoutBlock {
+  id        String                 @id @db.Uuid
+  order     Int                    @default(0)
+  workout   Workout                @relation(fields: [workoutId], references: [id])
+  workoutId String                 @db.Uuid
+  createdAt DateTime               @default(now()) @db.Timestamp(6)
+  updatedAt DateTime               @updatedAt @db.Timestamp(6)
+  exercises WorkoutBlockExercise[]
+}
+
+model WorkoutBlockExercise {
+  id         String       @id @db.Uuid
+  order      Int          @default(0)
+  block      WorkoutBlock @relation(fields: [blockId], references: [id])
+  blockId    String       @db.Uuid
+  exercise   Exercise     @relation(fields: [exerciseId], references: [id])
+  exerciseId String       @db.Uuid
+  createdAt  DateTime     @default(now()) @db.Timestamp(6)
+  updatedAt  DateTime     @updatedAt @db.Timestamp(6)
+  sets       WorkoutSet[]
+}
+
+model WorkoutSet {
+  id                     String               @id @db.Uuid
+  order                  Int                  @default(0)
+  isWarmup               Boolean              @default(false)
+  workoutBlockExercise   WorkoutBlockExercise @relation(fields: [workoutBlockExerciseId], references: [id])
+  workoutBlockExerciseId String               @db.Uuid
+  createdAt              DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt              DateTime             @updatedAt @db.Timestamp(6)
+  weight                 Float                @db.Real
+  reps                   Int                  @db.Integer
 }

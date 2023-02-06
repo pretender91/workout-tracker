@@ -5,6 +5,8 @@
     "dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.test.ts' --exec 'ts-node' ./src/main.ts",
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
+    "generate:module": "hygen module new --name ",
+    "generate:use-case": "hygen use-case new ",
     "test": "vitest"
   },
   "devDependencies": {
@@ -13,6 +15,7 @@
     "@tsconfig/node-lts-strictest-esm": "^18.12.1",
     "@tsconfig/node18": "^1.0.1",
     "@types/node": "^18.11.15",
+    "hygen": "^6.2.11",
     "nodemon": "^2.0.20",
     "prettier": "^2.8.1",
     "prisma": "^4.7.1",

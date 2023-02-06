@@ -37,10 +37,6 @@ export class CreateExercise
       throw new Error("User not logged in");
     }
 
-    if (this.context.currentUser.role.valueOf() !== "Admin") {
-      throw new Error("User not authorized");
-    }
-
     if (await this.context.exerciseGateway.checkExerciseNameExists(name)) {
       throw new ExerciseNameAlreadyTakenError();
     }

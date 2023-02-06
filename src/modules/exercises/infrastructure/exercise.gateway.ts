@@ -1,17 +1,14 @@
+import type { Context } from "../../../context.js";
 import {
   BackwardPaginationParams,
   Connection,
-  Edge,
   ForwardPaginationParams,
-  PageInfo,
   PaginationParams,
 } from "../../../libs/pagination.js";
-import prismaClient from "../../../prisma-client.js";
 import type { ExerciseName } from "../../../value-objects/exercise-name.js";
 import { Id } from "../../../value-objects/id.js";
 import type { Exercise } from "../domain/exercise.js";
 import type { ExerciseDTO } from "./exercise.dto.js";
-import type { ExerciseMapper } from "./exercise.mapper.js";
 
 type CreateExerciseParams = Pick<Exercise, "name" | "muscles" | "createdById">;
 type UpdateExerciseParams = Pick<Exercise, "id"> &
@@ -37,15 +34,17 @@ export interface ExerciseGateway {
   checkExerciseNameExists(name: ExerciseName): Promise<boolean>;
 }
 
-export class PrismaExerciseGateway implements ExerciseGateway {
-  private exerciseMapper: ExerciseMapper;
+type PrismaExerciseGatewayContext = Pick<Context, "exerciseMapper" | "prisma">;
 
-  constructor(params: { exerciseMapper: ExerciseMapper }) {
-    this.exerciseMapper = params.exerciseMapper;
+export class PrismaExerciseGateway implements ExerciseGateway {
+  private context: PrismaExerciseGatewayContext;
+
+  constructor(context: PrismaExerciseGatewayContext) {
+    this.context = context;
   }
 
   async checkExerciseNameExists(name: ExerciseName): Promise<boolean> {
-    const exercise = await prismaClient.exercise.findUnique({
+    const exercise = await this.context.prisma.exercise.findUnique({
       where: {
         name: name.valueOf(),
       },
@@ -55,7 +54,7 @@ export class PrismaExerciseGateway implements ExerciseGateway {
   }
 
   async createExercise(params: CreateExerciseParams): Promise<Exercise> {
-    const exerciseDTO = await prismaClient.exercise.create({
+    const exerciseDTO = await this.context.prisma.exercise.create({
       data: {
         id: Id.generate().valueOf(),
         name: params.name.valueOf(),
@@ -64,12 +63,12 @@ export class PrismaExerciseGateway implements ExerciseGateway {
       },
     });
 
-    return this.exerciseMapper.toDomain(exerciseDTO);
+    return this.context.exerciseMapper.toDomain(exerciseDTO);
   }
 
   async updateExercise(params: UpdateExerciseParams): Promise<Exercise> {
     const { id, muscles, name } = params;
-    const exerciseDTO = await prismaClient.exercise.update({
+    const exerciseDTO = await this.context.prisma.exercise.update({
       where: {
         id: id.valueOf(),
       },
@@ -78,11 +77,11 @@ export class PrismaExerciseGateway implements ExerciseGateway {
         name: name?.valueOf(),
       },
     });
-    return this.exerciseMapper.toDomain(exerciseDTO);
+    return this.context.exerciseMapper.toDomain(exerciseDTO);
   }
 
   async removeExercise(params: Pick<Exercise, "id">): Promise<Id | null> {
-    await prismaClient.exercise.delete({
+    await this.context.prisma.exercise.delete({
       where: {
         id: params.id.valueOf(),
       },
@@ -92,7 +91,7 @@ export class PrismaExerciseGateway implements ExerciseGateway {
   }
 
   async findById(params: Pick<Exercise, "id">): Promise<Exercise | null> {
-    const exerciseDTO = await prismaClient.exercise.findUnique({
+    const exerciseDTO = await this.context.prisma.exercise.findUnique({
       where: {
         id: params.id.valueOf(),
       },
@@ -102,7 +101,7 @@ export class PrismaExerciseGateway implements ExerciseGateway {
       return null;
     }
 
-    return this.exerciseMapper.toDomain(exerciseDTO);
+    return this.context.exerciseMapper.toDomain(exerciseDTO);
   }
 
   public async findExercises(
@@ -128,13 +127,13 @@ export class PrismaExerciseGateway implements ExerciseGateway {
         : undefined,
     };
 
-    let totalCount = await prismaClient.exercise.count({
+    let totalCount = await this.context.prisma.exercise.count({
       where,
     });
 
     if (pagination instanceof ForwardPaginationParams) {
       take = pagination.first.valueOf() + 1;
-      dtos = await prismaClient.exercise.findMany({
+      dtos = await this.context.prisma.exercise.findMany({
         where,
         take: take,
         skip: pagination.after ? 1 : 0,
@@ -154,7 +153,7 @@ export class PrismaExerciseGateway implements ExerciseGateway {
     if (pagination instanceof BackwardPaginationParams) {
       take = pagination.last.valueOf() + 1;
 
-      dtos = await prismaClient.exercise.findMany({
+      dtos = await this.context.prisma.exercise.findMany({
         where,
         take: take,
         skip: pagination.before ? 1 : 0,
@@ -171,19 +170,15 @@ export class PrismaExerciseGateway implements ExerciseGateway {
       hasPreviousPage = dtos.length > pagination.last.valueOf();
     }
 
-    const entities = this.exerciseMapper.toDomainArray(dtos.slice(0, take - 1));
+    const entities = this.context.exerciseMapper.toDomainArray(
+      dtos.slice(0, take - 1)
+    );
 
-    return new Connection<Exercise>({
-      edges: entities.map(
-        (entity) => new Edge<Exercise>({ node: entity, cursor: entity.id })
-      ),
+    return Connection.fromEntities({
+      entities,
+      hasNextPage,
+      hasPreviousPage,
       totalCount,
-      pageInfo: new PageInfo({
-        hasNextPage,
-        hasPreviousPage,
-        endCursor: entities.at(-1)?.id,
-        startCursor: entities.at(0)?.id,
-      }),
     });
   }
 }

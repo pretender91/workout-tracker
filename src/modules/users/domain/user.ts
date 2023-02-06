@@ -18,6 +18,14 @@ export class User extends Entity {
   public createdAt: Date;
   public updatedAt: Date;
 
+  public get isUser(): boolean {
+    return this.role.isUser;
+  }
+
+  public get isAdmin(): boolean {
+    return this.role.isAdmin;
+  }
+
   constructor(params: UserParams) {
     super(params.id);
 
